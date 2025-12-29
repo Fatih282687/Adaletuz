@@ -27,7 +27,7 @@ import {
   Scale, Gavel, Calendar, Phone, Mic, Upload, CircleCheck, ChevronRight, ChevronLeft, 
   FileText, Lock, Menu, X, Clock, Shield, Send, CircleAlert, Eye, LogOut, Star, 
   Folder, CircleHelp, Zap, MessageSquarePlus, ArrowRight, Archive, Trash2, 
-  TriangleAlert, ThumbsUp, Quote, LayoutDashboard, MapPin
+  TriangleAlert, ThumbsUp, Quote, LayoutDashboard, MapPin,Headphones, PenLine
 } from 'lucide-react';
 
 // --- Firebase Yapılandırması ---
@@ -371,7 +371,6 @@ const HomeView = ({ onNavigate, db, appId, user }) => {
   
   useEffect(() => {
     if(!user) return;
-    // Geri bildirimleri çekme işlemi
     const unsub = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'feedbacks'), s => {
       setTestimonials(s.docs.map(d=>({id:d.id, ...d.data()})).filter(d=>d.status==='approved' && d.type==='teşekkür'));
     }, (err) => console.log("Feed err:", err));
@@ -380,73 +379,74 @@ const HomeView = ({ onNavigate, db, appId, user }) => {
 
   return (
     <div className="pb-0">
-      <section className="relative h-[650px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[720px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-950 z-0"></div>
         <div className="relative z-10 text-center px-6">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-500 text-sm font-medium mb-6"><Scale size={16}/> Yeni Nesil Hukuk</div>
+          
+          {/* 1. ANA BAŞLIK */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-500 text-sm font-medium mb-6">
+            <Scale size={16}/> Yeni Nesil Hukuk
+          </div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">Uzman<span className="text-amber-500">Hukuk</span></h1>
-          <p className="text-xl text-slate-400 max-w-3xl mx-auto mb-10">Bireysel ve kurumsal müvekkiller için stratejik, hızlı ve etkili hukuki çözümler</p>
+          
+          {/* 2. KISA TANITIM */}
+          <p className="text-xl text-slate-400 max-w-3xl mx-auto mb-12">
+            Bireysel ve kurumsal müvekkiller için stratejik, hızlı ve etkili hukuki çözümler
+          </p>
           
           <div className="flex flex-col items-center">
-            
-            {/* --- YENİ EKLENEN ANİMASYONLU İKONLAR --- */}
-            <div className="flex items-center gap-8 mb-10 mt-2">
-              <div className="relative group cursor-help" title="Sesli Soru Sor">
-                {/* Daire şeklinde yayılan pulse (sinyal) efekti */}
-                <div className="absolute -inset-4 bg-amber-500/20 rounded-full animate-pulse-ring"></div>
-                <div className="relative p-4 bg-slate-800 border border-amber-500/40 rounded-full text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
-                  <Mic size={32} />
+            {/* 3. BUTONLAR (Hızlı Aksiyon) */}
+            <div className="flex justify-center gap-4 mb-12">
+              <Button className="px-8 shadow-2xl" onClick={() => onNavigate('soru-sor')}>Hukuki sorunu sor</Button>
+              <Button variant="outline" className="px-8" onClick={() => onNavigate('randevu')}>Randevu Al</Button>
+            </div>
+
+            {/* 4. AÇIKLAMA METNİ (Güven Veren Bilgi) */}
+            <p className="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed opacity-70 italic mb-10 animate-fadeIn">
+              Hukuki sorularınızı ister yazılı ister sesli olarak iletebilirsiniz. Başvurunuz incelendikten sonra, hukuki durumunuza uygun değerlendirme ve yönlendirme tarafınıza sunulur. Süreç, mesleki gizlilik çerçevesinde yürütülür.
+            </p>
+
+            {/* 5. MİNİMAL GÖRSEL İKONLAR (Görsel İmza) */}
+            <div className="flex items-center gap-6 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+              <div className="relative">
+                <div className="absolute -inset-3 bg-amber-500/10 rounded-full animate-pulse-ring"></div>
+                <div className="relative p-3 bg-slate-800/30 border border-amber-500/20 rounded-full text-amber-500">
+                  <Headphones size={24} />
                 </div>
               </div>
               
-              {/* İki ikonu bağlayan çizgi */}
-              <div className="w-16 h-px bg-gradient-to-r from-amber-500/40 to-slate-700"></div> 
+              <div className="w-12 h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent"></div> 
               
-              <div className="p-4 bg-slate-800 border border-slate-700 rounded-full text-slate-400" title="Yazılı Soru Sor">
-                <MessageSquarePlus size={32} />
+              <div className="p-3 bg-slate-800/30 border border-slate-700/50 rounded-full text-slate-400">
+                <PenLine size={24} />
               </div>
             </div>
-            {/* ---------------------------------------- */}
-
-            <div className="flex justify-center gap-4 mb-8">
-              <Button onClick={() => onNavigate('soru-sor')}>Hukuki sorunu sor</Button>
-              <Button variant="outline" onClick={() => onNavigate('randevu')}>Randevu Al</Button>
-            </div>
-            
-            <p className="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed opacity-80 italic animate-fadeIn">
-              Hukuki sorularınızı ister yazılı ister sesli olarak iletebilirsiniz. Başvurunuz incelendikten sonra, hukuki durumunuza uygun değerlendirme ve yönlendirme tarafınıza sunulur. Süreç, mesleki gizlilik ve hukuka uygunluk ilkeleri çerçevesinde yürütülür.
-            </p>
           </div>
         </div>
       </section>
       
       {testimonials.length > 0 && (
-        <div className="bg-slate-900 py-8 border-t border-slate-800 overflow-hidden">
-          <div className="container mx-auto px-6 mb-4 text-amber-500 text-sm font-bold flex gap-2"><ThumbsUp size={16}/> MÜVEKKİL YORUMLARI</div>
-          <div className="flex gap-6 animate-scroll whitespace-nowrap px-6">
-            {[...testimonials, ...testimonials].map((t, i) => {
-              const msg = typeof t.message === 'string' ? t.message : "Yorum içeriği görüntülenemiyor.";
-              return (
-                <div key={`${i}-${t.id}`} className="inline-block w-[300px] bg-slate-800 p-4 rounded-xl border border-slate-700 whitespace-normal">
-                  <Quote className="text-amber-500/20 mb-2" size={20}/>
-                  <p className="text-slate-300 text-sm italic line-clamp-3">"{msg}"</p>
-                  <div className="mt-2 text-white font-medium text-xs text-right">- {t.name}</div>
-                </div>
-              );
-            })}
+        <div className="bg-slate-900 py-10 border-t border-slate-800/50 overflow-hidden">
+          <div className="container mx-auto px-6 mb-6 text-amber-500/80 text-xs font-bold tracking-widest flex gap-2 uppercase">
+            <ThumbsUp size={14}/> Müvekkil Deneyimleri
           </div>
-          {/* Animasyon Tanımları */}
+          <div className="flex gap-6 animate-scroll whitespace-nowrap px-6">
+            {[...testimonials, ...testimonials].map((t, i) => (
+              <div key={`${i}-${t.id}`} className="inline-block w-[320px] bg-slate-800/40 p-5 rounded-2xl border border-slate-700/30 whitespace-normal backdrop-blur-sm">
+                <Quote className="text-amber-500/10 mb-3" size={24}/>
+                <p className="text-slate-300 text-sm leading-relaxed italic line-clamp-3">"{t.message}"</p>
+                <div className="mt-4 text-slate-400 font-medium text-xs text-right border-t border-slate-700/30 pt-2">- {t.name}</div>
+              </div>
+            ))}
+          </div>
           <style>{`
             @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } 
-            .animate-scroll { animation: scroll 30s linear infinite; }
-            
+            .animate-scroll { animation: scroll 40s linear infinite; }
             @keyframes pulse-ring {
-              0% { transform: scale(0.8); opacity: 0.8; }
-              100% { transform: scale(1.6); opacity: 0; }
+              0% { transform: scale(0.9); opacity: 0.5; }
+              100% { transform: scale(1.4); opacity: 0; }
             }
-            .animate-pulse-ring {
-              animation: pulse-ring 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-            }
+            .animate-pulse-ring { animation: pulse-ring 3s ease-out infinite; }
           `}</style>
         </div>
       )}
