@@ -371,6 +371,7 @@ const HomeView = ({ onNavigate, db, appId, user }) => {
   
   useEffect(() => {
     if(!user) return;
+    // Geri bildirimleri çekme işlemi
     const unsub = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'feedbacks'), s => {
       setTestimonials(s.docs.map(d=>({id:d.id, ...d.data()})).filter(d=>d.status==='approved' && d.type==='teşekkür'));
     }, (err) => console.log("Feed err:", err));
@@ -379,7 +380,7 @@ const HomeView = ({ onNavigate, db, appId, user }) => {
 
   return (
     <div className="pb-0">
-      <section className="relative h-[550px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[650px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-950 z-0"></div>
         <div className="relative z-10 text-center px-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-500 text-sm font-medium mb-6"><Scale size={16}/> Yeni Nesil Hukuk</div>
@@ -387,12 +388,31 @@ const HomeView = ({ onNavigate, db, appId, user }) => {
           <p className="text-xl text-slate-400 max-w-3xl mx-auto mb-10">Bireysel ve kurumsal müvekkiller için stratejik, hızlı ve etkili hukuki çözümler</p>
           
           <div className="flex flex-col items-center">
+            
+            {/* --- YENİ EKLENEN ANİMASYONLU İKONLAR --- */}
+            <div className="flex items-center gap-8 mb-10 mt-2">
+              <div className="relative group cursor-help" title="Sesli Soru Sor">
+                {/* Daire şeklinde yayılan pulse (sinyal) efekti */}
+                <div className="absolute -inset-4 bg-amber-500/20 rounded-full animate-pulse-ring"></div>
+                <div className="relative p-4 bg-slate-800 border border-amber-500/40 rounded-full text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                  <Mic size={32} />
+                </div>
+              </div>
+              
+              {/* İki ikonu bağlayan çizgi */}
+              <div className="w-16 h-px bg-gradient-to-r from-amber-500/40 to-slate-700"></div> 
+              
+              <div className="p-4 bg-slate-800 border border-slate-700 rounded-full text-slate-400" title="Yazılı Soru Sor">
+                <MessageSquarePlus size={32} />
+              </div>
+            </div>
+            {/* ---------------------------------------- */}
+
             <div className="flex justify-center gap-4 mb-8">
               <Button onClick={() => onNavigate('soru-sor')}>Hukuki sorunu sor</Button>
               <Button variant="outline" onClick={() => onNavigate('randevu')}>Randevu Al</Button>
             </div>
             
-            {/* Yeni Eklenen Açıklama Metni */}
             <p className="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed opacity-80 italic animate-fadeIn">
               Hukuki sorularınızı ister yazılı ister sesli olarak iletebilirsiniz. Başvurunuz incelendikten sonra, hukuki durumunuza uygun değerlendirme ve yönlendirme tarafınıza sunulur. Süreç, mesleki gizlilik ve hukuka uygunluk ilkeleri çerçevesinde yürütülür.
             </p>
@@ -415,7 +435,19 @@ const HomeView = ({ onNavigate, db, appId, user }) => {
               );
             })}
           </div>
-          <style>{`@keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } .animate-scroll { animation: scroll 30s linear infinite; }`}</style>
+          {/* Animasyon Tanımları */}
+          <style>{`
+            @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } 
+            .animate-scroll { animation: scroll 30s linear infinite; }
+            
+            @keyframes pulse-ring {
+              0% { transform: scale(0.8); opacity: 0.8; }
+              100% { transform: scale(1.6); opacity: 0; }
+            }
+            .animate-pulse-ring {
+              animation: pulse-ring 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+            }
+          `}</style>
         </div>
       )}
     </div>
