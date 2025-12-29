@@ -379,18 +379,27 @@ const HomeView = ({ onNavigate, db, appId, user }) => {
 
   return (
     <div className="pb-0">
-      <section className="relative h-[500px] flex items-center justify-center overflow-hidden">
+      <section className="relative h-[550px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-950 z-0"></div>
         <div className="relative z-10 text-center px-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-500 text-sm font-medium mb-6"><Scale size={16}/> Yeni Nesil Hukuk</div>
           <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">Uzman<span className="text-amber-500">Hukuk</span></h1>
           <p className="text-xl text-slate-400 max-w-3xl mx-auto mb-10">Bireysel ve kurumsal müvekkiller için stratejik, hızlı ve etkili hukuki çözümler</p>
-          <div className="flex justify-center gap-4">
-            <Button onClick={() => onNavigate('soru-sor')}>Soru Sor / Başvuru Yap</Button>
-            <Button variant="outline" onClick={() => onNavigate('randevu')}>Randevu Al</Button>
+          
+          <div className="flex flex-col items-center">
+            <div className="flex justify-center gap-4 mb-8">
+              <Button onClick={() => onNavigate('soru-sor')}>Hukuki sorunu sor</Button>
+              <Button variant="outline" onClick={() => onNavigate('randevu')}>Randevu Al</Button>
+            </div>
+            
+            {/* Yeni Eklenen Açıklama Metni */}
+            <p className="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed opacity-80 italic animate-fadeIn">
+              Hukuki sorularınızı ister yazılı ister sesli olarak iletebilirsiniz. Başvurunuz incelendikten sonra, hukuki durumunuza uygun değerlendirme ve yönlendirme tarafınıza sunulur. Süreç, mesleki gizlilik ve hukuka uygunluk ilkeleri çerçevesinde yürütülür.
+            </p>
           </div>
         </div>
       </section>
+      
       {testimonials.length > 0 && (
         <div className="bg-slate-900 py-8 border-t border-slate-800 overflow-hidden">
           <div className="container mx-auto px-6 mb-4 text-amber-500 text-sm font-bold flex gap-2"><ThumbsUp size={16}/> MÜVEKKİL YORUMLARI</div>
@@ -957,7 +966,7 @@ export default function App() {
               
               setFeedbackLoading(true);
               try {
-                await addDoc(collection(db,'artifacts',appId,'public','data','feedbacks'),{
+                await addDoc(collection(db,'artifacts',appId,'public', 'data','feedbacks'),{
                     name: e.target.name.value,
                     phone: e.target.phone.value,
                     message:e.target.msg.value, 
