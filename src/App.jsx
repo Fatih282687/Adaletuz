@@ -258,7 +258,7 @@ const AudioRecorder = ({ onRecordingComplete, label = "Ses Kaydı" }) => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.ondataavailable = (e) => { if(e.data.size > 0) chunksRef.current.push(e.data); };
-      mediaRecorderRef.current.onstop = () => {
+      mediaRecorderRef.current.onstop = async () => {
         const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
         const url = URL.createObjectURL(blob);
         setAudioURL(url);
