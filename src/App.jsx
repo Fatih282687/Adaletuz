@@ -182,51 +182,7 @@ const handlePrintPDF = (data, type) => {
   printWindow.document.close();
   printWindow.print();
 };
-const HakkimizdaView = ({ onNavigate }) => {
-  return (
-    <div className="animate-fadeIn">
-      <section className="relative h-[350px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=2070" 
-            alt="Adalet ve Hukuk" 
-            className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900"></div>
-        </div>
-        <div className="relative z-10 text-center px-6">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">Hakkımızda</h1>
-          <div className="h-1 w-20 bg-amber-500 mx-auto rounded-full"></div>
-        </div>
-      </section>
-      <section className="py-16 px-6 max-w-4xl mx-auto">
-        <div className="bg-slate-800/40 border border-slate-700/50 p-8 md:p-12 rounded-3xl backdrop-blur-sm shadow-xl">
-          <h2 className="text-2xl md:text-3xl font-bold text-amber-500 mb-8 leading-tight">Güvenle Geleceğe, Uzmanlıkla Çözüme</h2>
-          <div className="space-y-6 text-slate-300 leading-relaxed text-base md:text-lg">
-            <p>Uzman Hukuk & Danışmanlık olarak, hukukun sadece kurallar bütünü değil, hak ve özgürlüklerin en güçlü kalesi olduğuna inanıyoruz.</p>
-            <div className="grid md:grid-cols-3 gap-6 my-12">
-              <div className="p-5 bg-slate-900/50 rounded-2xl border border-slate-700/50 text-center">
-                <Scale className="text-amber-500 mx-auto mb-3" size={28} />
-                <h3 className="text-white font-bold mb-1 italic">İş Hukuku</h3>
-              </div>
-              <div className="p-5 bg-slate-900/50 rounded-2xl border border-slate-700/50 text-center">
-                <Gavel className="text-amber-500 mx-auto mb-3" size={28} />
-                <h3 className="text-white font-bold mb-1 italic">İcra İflas</h3>
-              </div>
-              <div className="p-5 bg-slate-900/50 rounded-2xl border border-slate-700/50 text-center">
-                <Shield className="text-amber-500 mx-auto mb-3" size={28} />
-                <h3 className="text-white font-bold mb-1 italic">Gayrimenkul</h3>
-              </div>
-            </div>
-          </div>
-          <div className="mt-12 text-center border-t border-slate-700 pt-8">
-             <Button onClick={() => onNavigate('home')} variant="outline" className="px-10">Anasayfaya Dön</Button>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-};
+
 const HomeView = ({ onNavigate }) => {
   return (
     <div className="container mx-auto py-20 text-center">
