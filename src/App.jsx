@@ -22,7 +22,7 @@ import {
   serverTimestamp,
   where
 } from 'firebase/firestore';
-// İkon İsimleri Güncellendi (HelpCircle -> CircleHelp vb.)
+// İkon İsimleri Güncellendi
 import { 
   Scale, Gavel, Calendar, Phone, Mic, Upload, CircleCheck, ChevronRight, ChevronLeft, 
   FileText, Lock, Menu, X, Clock, Shield, Send, CircleAlert, Eye, LogOut, Star, 
@@ -71,25 +71,21 @@ const callGemini = async (prompt) => {
 
 // --- Etiket ve Çıktı Sabitleri ---
 const LABEL_MAPPING = {
-  // Bölüm 1
   tcNo: "T.C. Kimlik No",
   birthDate: "Doğum Tarihi",
   education: "Eğitim Durumu",
   address: "Açık Adres",
-  // Bölüm 2
   employer: "İşveren Ünvanı",
   taxId: "Vergi Numarası",
   workAddress: "İşyeri Adresi",
   workerCount: "Çalışan Sayısı",
   contractType: "Çalışma Şekli", 
   union: "Sendika / Toplu İş Sözleşmesi", 
-  // Bölüm 3
   jobDesc: "İş Tanımı",
   startDate: "İşe Giriş Tarihi",
   endDate: "İşten Çıkış Tarihi",
   workSchedule: "Çalışma Saatleri ve Düzeni", 
   attendanceSystem: "Giriş-Çıkış Takip Sistemi", 
-  // Bölüm 4
   salary: "Son Net Ücret",
   raises: "Ücret Artışları", 
   paymentTime: "Ödeme Zamanı",
@@ -99,17 +95,14 @@ const LABEL_MAPPING = {
   payrollStatus: "Bordro Durumu", 
   foodTransport: "Yol ve Yemek", 
   annualLeave: "Kalan Yıllık İzin",
-  // Bölüm 5
   noticePeriod: "İhbar Öneli",
   jobSearchLeave: "İş Arama İzni",
   witnesses: "Tanıklar",
   releaseForm: "İbraname/İstifa Belgesi",
   subcontractor: "Alt İşveren/Devir",
   sgkCode: "SGK Çıkış Kodu",
-  // Bölüm 6
   healthStatus: "Sağlık Durumu", 
   specialIssues: "Özel Hususlar (Mobbing vb.)",
-  // Bölüm 7
   terminationReason: "Fesih Nedeni",
   ongoingTermination: "İş Akdi Devam Durumu" 
 };
@@ -151,13 +144,13 @@ const formatDataForExport = (data, type) => {
 
   return `
     <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-      <h1 style="color: #2c3e50; border-bottom: 2px solid #e67e22; padding-bottom: 10px;">AdaletUz - ${type === 'cases' ? 'İş Davası Dosyası' : 'Danışmanlık Talebi'}</h1>
+      <h1 style="color: #2c3e50; border-bottom: 2px solid #e67e22; padding-bottom: 10px;">Uzman Hukuk - ${type === 'cases' ? 'İş Davası Dosyası' : 'Danışmanlık Talebi'}</h1>
       <p style="font-size: 12px; color: #7f8c8d;">Oluşturulma Tarihi: ${dateStr}</p>
       <br/>
       ${contentHtml}
       <br/>
       <hr/>
-      <p style="font-size: 10px; text-align: center; color: #95a5a6;">Bu belge AdaletUz Hukuk Teknolojileri sistemi üzerinden oluşturulmuştur.</p>
+      <p style="font-size: 10px; text-align: center; color: #95a5a6;">Bu belge Uzman Hukuk platformu üzerinden oluşturulmuştur.</p>
     </div>
   `;
 };
@@ -165,7 +158,7 @@ const formatDataForExport = (data, type) => {
 const handleExportWord = (data, type) => {
   const htmlContent = `
     <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-    <head><meta charset='utf-8'><title>AdaletUz Dosyası</title></head>
+    <head><meta charset='utf-8'><title>Uzman Hukuk Dosyası</title></head>
     <body>${formatDataForExport(data, type)}</body>
     </html>
   `;
@@ -173,7 +166,7 @@ const handleExportWord = (data, type) => {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `adaletuz-${type}-${data.id}.doc`; 
+  link.download = `uzman-hukuk-${type}-${data.id}.doc`; 
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -204,7 +197,6 @@ const THEME = {
 
 const InfoTooltip = ({ text }) => (
   <div className="group relative inline-flex ml-2 align-middle z-50">
-    {/* HelpCircle yerine CircleHelp kullanıldı */}
     <CircleHelp size={16} className="text-amber-500/80 hover:text-amber-400 cursor-help transition-colors" />
     <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute w-64 p-3 text-xs font-light text-slate-200 bg-slate-800 border border-amber-500/30 rounded-lg shadow-xl -left-28 bottom-full mb-2 pointer-events-none z-[100]">
       {text}
@@ -342,7 +334,7 @@ const KvkkModal = ({ onClose }) => (
       <div className="p-8 overflow-y-auto text-slate-300 text-sm leading-relaxed space-y-6">
         <h4 className="text-lg font-bold text-white">1. Veri Sorumlusu</h4>
         <p>
-          6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, kişisel verileriniz; veri sorumlusu olarak <strong>AdaletUz Hukuk Teknolojileri</strong> tarafından aşağıda açıklanan kapsamda işlenebilecektir.
+          6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, kişisel verileriniz; veri sorumlusu olarak <strong>Uzman Hukuk</strong> tarafından aşağıda açıklanan kapsamda işlenebilecektir.
         </p>
 
         <h4 className="text-lg font-bold text-white">2. Kişisel Verilerin Hangi Amaçla İşleneceği</h4>
@@ -362,10 +354,10 @@ const KvkkModal = ({ onClose }) => (
 
         <h4 className="text-lg font-bold text-white">5. Veri Güvenliği</h4>
         <p>
-          AdaletUz, kişisel verilerinizin hukuka aykırı olarak işlenmesini ve erişilmesini önlemek amacıyla gerekli her türlü teknik ve idari güvenlik tedbirlerini almaktadır.
+          Uzman Hukuk, kişisel verilerinizin hukuka aykırı olarak işlenmesini ve erişilmesini önlemek amacıyla gerekli her türlü teknik ve idari güvenlik tedbirlerini almaktadır.
         </p>
 
-        <div className="pt-4 border-t border-slate-700"><p className="text-xs text-slate-500">Bu metin en son 28.12.2025 tarihinde güncellenmiştir.</p></div>
+        <div className="pt-4 border-t border-slate-700"><p className="text-xs text-slate-500">Bu metin en son 29.12.2025 tarihinde güncellenmiştir.</p></div>
       </div>
       <div className="p-6 border-t border-slate-700 bg-slate-800 rounded-b-2xl flex justify-end"><Button onClick={onClose}>Okudum, Anladım ve Onaylıyorum</Button></div>
     </div>
@@ -391,8 +383,8 @@ const HomeView = ({ onNavigate, db, appId, user }) => {
         <div className="absolute inset-0 bg-gradient-to-b from-slate-800 to-slate-950 z-0"></div>
         <div className="relative z-10 text-center px-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-500 text-sm font-medium mb-6"><Scale size={16}/> Yeni Nesil Hukuk</div>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">Adalet<span className="text-amber-500">Uz</span></h1>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10">Hukuki süreçlerinizi dijitalleştiriyoruz. Hızlı, güvenli ve uzman destek.</p>
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">Uzman<span className="text-amber-500">Hukuk</span></h1>
+          <p className="text-xl text-slate-400 max-w-3xl mx-auto mb-10">Bireysel ve kurumsal müvekkiller için stratejik, hızlı ve etkili hukuki çözümler</p>
           <div className="flex justify-center gap-4">
             <Button onClick={() => onNavigate('soru-sor')}>Soru Sor / Başvuru Yap</Button>
             <Button variant="outline" onClick={() => onNavigate('randevu')}>Randevu Al</Button>
@@ -724,20 +716,19 @@ const AdminPanel = ({ db, auth, appId, onNavigate }) => {
     
     let collections = [];
     if (view === 'archive') {
-       collections = ['general_questions', 'labor_cases', 'appointments', 'feedbacks'];
+        collections = ['general_questions', 'labor_cases', 'appointments', 'feedbacks'];
     } else if (view === 'questions') {
-       collections = ['general_questions'];
+        collections = ['general_questions'];
     } else if (view === 'cases') {
-       collections = ['labor_cases'];
+        collections = ['labor_cases'];
     } else if (view === 'appointments') {
-       collections = ['appointments'];
+        collections = ['appointments'];
     } else if (view === 'feedbacks') {
-       collections = ['feedbacks'];
+        collections = ['feedbacks'];
     }
 
     const unsubs = collections.map(c => onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', c), s => {
       setItems(prev => {
-        // Remove items from this collection to avoid dups before re-adding
         const others = prev.filter(i => i.source !== c);
         const news = s.docs.map(d => ({id:d.id, source:c, ...d.data()}));
         
@@ -787,7 +778,7 @@ const AdminPanel = ({ db, auth, appId, onNavigate }) => {
     <div className="flex min-h-screen bg-slate-900">
       <div className="w-64 bg-slate-800 border-r border-slate-700 flex flex-col">
         <div className="p-6">
-            <h2 className="text-xl font-bold text-white">Adalet<span className="text-amber-500">Uz</span> Panel</h2>
+            <h2 className="text-xl font-bold text-white">Uzman<span className="text-amber-500">Hukuk</span> Panel</h2>
         </div>
         <nav className="flex-1 px-4 space-y-2">
           <button onClick={()=>setView('dashboard')} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${view==='dashboard'?'bg-amber-600 text-white':'text-slate-400 hover:bg-slate-700 hover:text-white'}`}>
@@ -906,18 +897,19 @@ export default function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // 1. Firebase Config + Initialization (Global Scope'da yapıldı)
-    
-    // 2. Auth Başlatma (İlk renderda)
+    // 1. Sekme Başlığı Güncelleme
+    document.title = "Uzman Hukuk | Av. Fatih Uzman - Av. Kübra Karakuş";
+
+    // 2. Auth Başlatma
     const initAuth = async () => {
       if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-         try {
+          try {
             await signInWithCustomToken(auth, __initial_auth_token);
-         } catch(e) { console.error("Token Auth Error", e); }
+          } catch(e) { console.error("Token Auth Error", e); }
       } else {
-         try {
+          try {
             await signInAnonymously(auth);
-         } catch(e) { console.error("Anon Auth Error", e); }
+          } catch(e) { console.error("Anon Auth Error", e); }
       }
     };
     initAuth();
@@ -940,7 +932,7 @@ export default function App() {
     <div className={`min-h-screen ${THEME.bg} text-slate-100 font-sans`}>
       <nav className="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <div onClick={()=>nav('home')} className="text-xl font-bold text-white cursor-pointer">Adalet<span className="text-amber-500">Uz</span></div>
+          <div onClick={()=>nav('home')} className="text-xl font-bold text-white cursor-pointer">Uzman<span className="text-amber-500">Hukuk</span></div>
           <div className="hidden md:flex gap-6 items-center">
             {['home','soru-sor','randevu','contact'].map(k => <button key={k} onClick={()=>nav(k)} className={`capitalize ${view===k?'text-amber-500':'text-slate-300 hover:text-white'}`}>{k === 'home' ? 'Anasayfa' : k.replace('-',' ')}</button>)}
             <Button variant="outline" className="h-8 text-xs" onClick={()=>setFeedback(true)}>Görüş Bildir</Button>
@@ -1018,7 +1010,7 @@ export default function App() {
 
       <footer className="bg-slate-950 py-8 border-t border-slate-900 text-center text-slate-500 text-sm">
         <div className="container mx-auto px-6 flex justify-between items-center">
-          <span>&copy; 2025 AdaletUz</span>
+          <span>&copy; 2025 Uzman Hukuk</span>
           <button onClick={()=>nav('admin')} className="flex items-center gap-1 hover:text-amber-500"><Lock size={12}/> Yönetici</button>
         </div>
       </footer>
