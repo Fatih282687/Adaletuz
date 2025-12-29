@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { initializeApp } from 'firebase/app';
 import { 
   getAuth, 
@@ -1021,6 +1022,7 @@ export default function App() {
           <button onClick={()=>nav('admin')} className="flex items-center gap-1 hover:text-amber-500"><Lock size={12}/> Yönetici</button>
         </div>
       </footer>
+      <Analytics />
     </div>
   );
 }
