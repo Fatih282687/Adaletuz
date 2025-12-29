@@ -354,7 +354,7 @@ const KvkkModal = ({ onClose }) => (
 
         <h4 className="text-lg font-bold text-white">5. Veri Güvenliği</h4>
         <p>
-          Uzman Hukuk, kişisel verilerinizin hukuka aykırı olarak işlenmesini ve erişilmesini önlemek amacıyla gerekli her türlü teknik ve idari güvenlik tedbirlerini almaktadır.
+          Uzman Hukuk, kişisel verilerinizных hukuka aykırı olarak işlenmesini ve erişilmesini önlemek amacıyla gerekli her türlü teknik ve idari güvenlik tedbirlerini almaktadır.
         </p>
 
         <div className="pt-4 border-t border-slate-700"><p className="text-xs text-slate-500">Bu metin en son 29.12.2025 tarihinde güncellenmiştir.</p></div>
@@ -484,21 +484,17 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
       <div className="max-w-6xl mx-auto py-12 px-6">
           <h2 className="text-3xl font-bold text-white text-center mb-8">Nasıl Yardımcı Olabiliriz?</h2>
           <div className="grid md:grid-cols-2 gap-8">
-              {/* Seçenek 1: Genel Soru */}
               <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 flex flex-col items-center text-center hover:border-amber-500/50 transition-colors">
                   <div className="p-4 bg-blue-500/10 rounded-full text-blue-400 mb-6"><Zap size={32}/></div>
                   <h3 className="text-2xl font-bold text-white mb-2">Genel Hukuki Danışmanlık</h3>
                   <p className="text-slate-400 mb-8">Boşanma, Ceza, Miras, Gayrimenkul veya diğer tüm hukuki konularda genel sorularınız için.</p>
                   <Button onClick={onSwitchToGeneral} variant="secondary" className="w-full mt-auto">Genel Soru Sor <ChevronRight size={16}/></Button>
               </div>
-              
-              {/* Seçenek 2: İş Hukuku Sihirbazı */}
               <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-2xl border border-amber-500/30 relative overflow-hidden flex flex-col items-center text-center">
                   <div className="p-4 bg-amber-500/10 rounded-full text-amber-500 mb-6 relative z-10"><FileText size={32}/></div>
                   <h3 className="text-2xl font-bold text-white mb-2 relative z-10">İş Hukuku / Tazminat Hesapla</h3>
                   <p className="text-slate-400 mb-8 relative z-10">Kıdem, İhbar, Fazla Mesai ve İşe İade davalarınız için detaylı analiz ve tazminat hesaplama sihirbazı.</p>
                   <Button onClick={startDetailedWizard} className="w-full mt-auto relative z-10">Sihirbazı Başlat <ArrowRight size={16}/></Button>
-                  {/* Dekoratif Arkaplan */}
                   <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl"></div>
               </div>
           </div>
@@ -509,7 +505,6 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
     <div className="max-w-3xl mx-auto py-12 px-6">
       {showKvkkModal && <KvkkModal onClose={() => setShowKvkkModal(false)} />}
       
-      {/* Uzun Bilgilendirme Metni */}
       {step === 1 && (
         <div className="bg-slate-800/80 border border-blue-500/30 p-6 rounded-xl mb-8 animate-fadeIn">
             <h3 className="text-lg font-bold text-blue-400 mb-2 flex items-center gap-2"><CircleAlert size={20}/> ÖNEMLİ BİLGİLENDİRME</h3>
@@ -527,7 +522,6 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
       <div className="mb-8 flex justify-between items-center text-sm text-slate-500 font-mono"><span>ADIM {step}/7</span><div className="h-1 flex-1 mx-4 bg-slate-800 rounded-full overflow-hidden"><div className="h-full bg-amber-500 transition-all duration-300" style={{ width: `${(step/7)*100}%` }}></div></div></div>
       <div className="bg-slate-800 p-8 rounded-2xl border border-slate-700 min-h-[400px] relative">
          
-         {/* STEP 1 */}
          {step === 1 && (
             <div className="space-y-4 animate-fadeIn">
                 <h3 className="text-xl font-bold text-white mb-4">1. Müvekkil Bilgileri</h3>
@@ -547,7 +541,6 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
             </div>
          )}
 
-         {/* STEP 2 */}
          {step === 2 && (
             <div className="space-y-4 animate-fadeIn">
                 <h3 className="text-xl font-bold text-white mb-4">2. İşveren Bilgileri</h3>
@@ -560,7 +553,6 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
             </div>
          )}
 
-         {/* STEP 3 */}
          {step === 3 && (
             <div className="space-y-4 animate-fadeIn">
                 <h3 className="text-xl font-bold text-white mb-4">3. İşe İlişkin Bilgiler</h3>
@@ -574,7 +566,6 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
             </div>
          )}
 
-         {/* STEP 4 */}
          {step === 4 && (
             <div className="space-y-4 animate-fadeIn">
                 <h3 className="text-xl font-bold text-white mb-4">4. Ödemeler ve Sosyal Haklar</h3>
@@ -590,7 +581,6 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
                 <HybridInput label="Yol ve Yemek" info="Servis var mı? Yemek kartı mı veriliyor?" value={formData.answers.foodTransport?.text} onChange={t => updateAnswer('foodTransport', t)} onAudio={a => updateAudio('foodTransport', a)} />
                 <Input label="Kalan Yıllık İzin" value={formData.answers.annualLeave?.text || ''} onChange={e => updateAnswer('annualLeave', e.target.value)} />
                 
-                {/* Dosya Yükleme Ekstra */}
                 <div className="mt-4 border-t border-slate-700 pt-4">
                     <p className="text-sm text-slate-400 mb-2">Maaş Bordrosu veya Banka Dekontu Yükle:</p>
                     <div className="flex gap-2 flex-wrap">
@@ -600,7 +590,6 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
             </div>
          )}
 
-         {/* STEP 5 */}
          {step === 5 && (
             <div className="space-y-4 animate-fadeIn">
                 <h3 className="text-xl font-bold text-white mb-4">5. Fesih – Belgeler</h3>
@@ -623,7 +612,6 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
             </div>
          )}
 
-         {/* STEP 6 */}
          {step === 6 && (
             <div className="space-y-4 animate-fadeIn">
                 <h3 className="text-xl font-bold text-white mb-4">6. Sağlık & Özel Hususlar</h3>
@@ -639,7 +627,6 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
             </div>
          )}
 
-         {/* STEP 7 */}
          {step === 7 && (
             <div className="space-y-4 animate-fadeIn">
                 <h3 className="text-xl font-bold text-white mb-4">7. Sonuç ve Onay</h3>
@@ -654,7 +641,10 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
          )}
 
          <div className="flex justify-center gap-2 mt-6 mb-4">{[1, 2, 3, 4, 5, 6, 7].map(num => (<button key={num} onClick={() => setStep(num)} className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${step === num ? 'bg-amber-500 text-white' : 'bg-slate-700 text-slate-400'}`}>{num}</button>))}</div>
-         <div className="flex justify-between mt-8 pt-8 border-t border-slate-700"><Button variant="secondary" onClick={handleStepPrev} disabled={step === 1}><ChevronLeft size={16} /> Geri</Button>{step < 7 ? (<Button onClick={handleStepNext}>İleri <ChevronRight size={16} /></Button>) : (<Button onClick={handleSubmit} disabled={loading}>{loading ? 'Gönderiliyor...' : 'Başvuruyu Tamamla'}</Button>)}</div>
+         <div className="flex justify-between mt-8 pt-8 border-t border-slate-700">
+           {step > 1 ? (<Button variant="secondary" onClick={handleStepPrev}><ChevronLeft size={16} /> Geri</Button>) : (<div />)}
+           {step < 7 ? (<Button onClick={handleStepNext}>İleri <ChevronRight size={16} /></Button>) : (<Button onClick={handleSubmit} disabled={loading}>{loading ? 'Gönderiliyor...' : 'Başvuruyu Tamamla'}</Button>)}
+         </div>
       </div>
     </div>
   );
@@ -700,7 +690,6 @@ const AdminPanel = ({ db, auth, appId, onNavigate }) => {
 
   useEffect(() => onAuthStateChanged(auth, u => { if(u && !u.isAnonymous) setUser(u); }), []);
   
-  // Dashboard Stats Effect
   useEffect(() => {
     if(!user) return;
     const unsub1 = onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'general_questions'), s => setStats(p => ({...p, q: s.docs.filter(d => d.data().status !== 'archived').length})));
@@ -710,7 +699,6 @@ const AdminPanel = ({ db, auth, appId, onNavigate }) => {
     return () => { unsub1(); unsub2(); unsub3(); unsub4(); };
   }, [user]);
 
-  // Items Effect based on View
   useEffect(() => {
     if(!user || view === 'dashboard') return;
     
@@ -876,8 +864,12 @@ const AdminPanel = ({ db, auth, appId, onNavigate }) => {
                 </div>
 
                 <div className="flex gap-2">
-                    {item.status !== 'approved' && item.status !== 'archived' && <Button variant="outline" className="h-8 text-xs border-emerald-600 text-emerald-500" onClick={()=>handleStatus(item, 'approved')}>Onayla / Yayınla</Button>}
-                    {item.status !== 'rejected' && item.status !== 'archived' && <Button variant="outline" className="h-8 text-xs border-red-600 text-red-500" onClick={()=>handleStatus(item, 'rejected')}>Reddet</Button>}
+                    {item.source === 'feedbacks' && (
+                      <>
+                        {item.status !== 'approved' && item.status !== 'archived' && <Button variant="outline" className="h-8 text-xs border-emerald-600 text-emerald-500" onClick={()=>handleStatus(item, 'approved')}>Onayla / Yayınla</Button>}
+                        {item.status !== 'rejected' && item.status !== 'archived' && <Button variant="outline" className="h-8 text-xs border-red-600 text-red-500" onClick={()=>handleStatus(item, 'rejected')}>Reddet</Button>}
+                      </>
+                    )}
                     {item.status === 'approved' && <span className="text-emerald-500 text-xs flex items-center gap-1"><CircleCheck size={12}/> Onaylandı</span>}
                 </div>
                 </div>
@@ -923,7 +915,6 @@ export default function App() {
 
   const nav = (v) => { setView(v); setMenu(false); };
 
-  // Kullanıcı yüklenene kadar basit bir loading
   if (!user && view === 'admin') return <div className="flex h-screen items-center justify-center bg-slate-900 text-white">Yükleniyor...</div>;
 
   if(view === 'admin') return <AdminPanel db={db} auth={auth} appId={appId} onNavigate={nav} />;
@@ -934,17 +925,28 @@ export default function App() {
         <div className="container mx-auto px-6 h-16 flex items-center justify-between">
           <div onClick={()=>nav('home')} className="text-xl font-bold text-white cursor-pointer">Uzman<span className="text-amber-500">Hukuk</span></div>
           <div className="hidden md:flex gap-6 items-center">
-            {['home','soru-sor','randevu','contact'].map(k => <button key={k} onClick={()=>nav(k)} className={`capitalize ${view===k?'text-amber-500':'text-slate-300 hover:text-white'}`}>{k === 'home' ? 'Anasayfa' : k.replace('-',' ')}</button>)}
+            {['home','soru-sor','randevu','contact'].map(k => (
+              <button 
+                key={k} 
+                onClick={()=>nav(k)} 
+                className={`capitalize ${view===k?'text-amber-500':'text-slate-300 hover:text-white'}`}
+              >
+                {k === 'home' ? 'Anasayfa' : k === 'contact' ? 'İletişim' : k.replace('-',' ')}
+              </button>
+            ))}
             <Button variant="outline" className="h-8 text-xs" onClick={()=>setFeedback(true)}>Görüş Bildir</Button>
           </div>
           <button className="md:hidden" onClick={()=>setMenu(!menu)}>{menu?<X/>:<Menu/>}</button>
         </div>
         {menu && <div className="md:hidden bg-slate-800 border-b border-slate-700 p-4 flex flex-col gap-4">
-          {['home','soru-sor','randevu','contact'].map(k => <button key={k} onClick={()=>nav(k)} className="text-left capitalize text-slate-300">{k === 'home' ? 'Anasayfa' : k.replace('-',' ')}</button>)}
+          {['home','soru-sor','randevu','contact'].map(k => (
+            <button key={k} onClick={()=>nav(k)} className="text-left capitalize text-slate-300">
+              {k === 'home' ? 'Anasayfa' : k === 'contact' ? 'İletişim' : k.replace('-',' ')}
+            </button>
+          ))}
         </div>}
       </nav>
 
-      {/* Feedback Modal */}
       {feedback && <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
         <div className="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl relative">
           <button onClick={()=>setFeedback(false)} className="absolute top-4 right-4 text-slate-400 hover:text-white"><X size={20}/></button>
