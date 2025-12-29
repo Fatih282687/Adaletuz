@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { initializeApp } from 'firebase/app';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { 
   getAuth, 
   signInAnonymously, 
@@ -43,6 +44,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 // App ID Yönetimi (Veritabanı izolasyonu için)
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'adaletuz-web';
@@ -68,6 +70,15 @@ const callGemini = async (prompt) => {
     return "AI servisine şu an ulaşılamıyor. Lütfen daha sonra tekrar deneyin.";
   }
 };
+
+
+// --- Dosya/Ses Yükleme (Firebase Storage) ---
+const uploadToStorage = async ({ blobOrFile, path, contentType }) => {
+  const ref = storageRef(storage, path);
+  const snapshot = await uploadBytes(ref, blobOrFile, contentType ? { contentType } : undefined);
+  return await getDownloadURL(snapshot.ref);
+};
+
 
 // --- Etiket ve Çıktı Sabitleri ---
 const LABEL_MAPPING = {
@@ -246,14 +257,20 @@ const AudioRecorder = ({ onRecordingComplete, label = "Ses Kaydı" }) => {
       mediaRecorderRef.current = new MediaRecorder(stream);
       mediaRecorderRef.current.ondataavailable = (e) => { if(e.data.size > 0) chunksRef.current.push(e.data); };
       mediaRecorderRef.current.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        const url = URL.createObjectURL(blob);
-        setAudioURL(url);
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => onRecordingComplete(reader.result);
-        chunksRef.current = [];
-      };
+  const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+  const url = URL.createObjectURL(blob);
+  setAudioURL(url);
+
+  onRecordingComplete({
+    blob,
+    localUrl: url,
+    type: 'audio/webm',
+    size: blob.size
+  });
+
+  chunksRef.current = [];
+};
+
       mediaRecorderRef.current.start();
       setIsRecording(true);
     } catch (err) { alert("Mikrofon hatası: " + err.message); }
@@ -295,20 +312,18 @@ const FileUpload = ({ onFileSelect }) => {
   const handleFile = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 1048576) return alert("Dosya 1MB'dan küçük olmalı.");
+      if (file.size > 10 * 1024 * 1024) return alert("Dosya 10MB'dan küçük olmalı.");
       setFileName(file.name);
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = () => onFileSelect({ name: file.name, data: reader.result, type: file.type });
+      onFileSelect({ name: file.name, type: file.type, size: file.size, file });
     }
   };
   return (
     <div className="mt-2">
-      <input type="file" ref={fileInputRef} onChange={handleFile} className="hidden" accept=".pdf,.doc,.docx,.jpg" />
+      <input type="file" ref={fileInputRef} onChange={handleFile} className="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
       <button type="button" onClick={() => fileInputRef.current.click()} className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors">
         <Upload size={16} /> {fileName || "Dosya Ekle"}
       </button>
-      <span className="text-[10px] text-amber-500/80 ml-2 block mt-1">Dikkat: 1 MB üstü dosya yüklemeyiniz.</span>
+      <span className="text-[10px] text-amber-500/80 ml-2 block mt-1">Dikkat: 10 MB üstü dosya yüklemeyiniz.</span>
     </div>
   );
 };
@@ -354,7 +369,7 @@ const KvkkModal = ({ onClose }) => (
 
         <h4 className="text-lg font-bold text-white">5. Veri Güvenliği</h4>
         <p>
-          Uzman Hukuk, kişisel verilerinizных hukuka aykırı olarak işlenmesini ve erişilmesini önlemek amacıyla gerekli her türlü teknik ve idari güvenlik tedbirlerini almaktadır.
+          Uzman Hukuk, kişisel verilerinizin hukuka aykırı olarak işlenmesini ve erişilmesini önlemek amacıyla gerekli her türlü teknik ve idari güvenlik tedbirlerini almaktadır.
         </p>
 
         <div className="pt-4 border-t border-slate-700"><p className="text-xs text-slate-500">Bu metin en son 29.12.2025 tarihinde güncellenmiştir.</p></div>
@@ -365,6 +380,77 @@ const KvkkModal = ({ onClose }) => (
 );
 
 // --- Sayfa Bileşenleri ---
+
+
+// --- Anasayfa (HomeView) ---
+const HomeView = ({ onNavigate }) => {
+  return (
+    <div className="animate-fadeIn">
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-24 -right-24 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="container mx-auto px-6 py-16 md:py-24">
+          <div className="max-w-4xl">
+            <div className="inline-flex items-center gap-2 text-amber-400/90 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-full text-sm">
+              <Shield size={16} /> Avukat-Müvekkil Gizliliği & KVKK Hassasiyeti
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-bold text-white mt-6 leading-tight tracking-tight">
+              Haklarınız için <span className="text-amber-500">kararlı</span>, süreciniz için <span className="text-amber-500">titiz</span> takip.
+            </h1>
+
+            <p className="text-slate-300 mt-6 text-lg leading-relaxed max-w-3xl">
+              Uzman Hukuk olarak bireysel ve kurumsal müvekkillerimize; iş hukuku, icra-iflas, gayrimenkul ve genel danışmanlık alanlarında
+              <strong className="text-slate-100"> avukatlık hizmeti</strong> sunuyoruz.
+              Sürecinizi doğru değerlendirebilmemiz için sorularınızı <strong className="text-slate-100">yazılı</strong> olarak iletebilir ya da
+              <strong className="text-slate-100"> sesli not</strong> bırakabilirsiniz. Dilerseniz ilgili belgenizi de ekleyebilirsiniz.
+            </p>
+
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+              <Button onClick={() => onNavigate('soru-sor')} className="sm:w-auto w-full">
+                Soru Sor / Başvuru Oluştur <ChevronRight size={18} />
+              </Button>
+              <Button variant="outline" onClick={() => onNavigate('randevu')} className="sm:w-auto w-full">
+                Randevu Talep Et <Calendar size={18} />
+              </Button>
+              <Button variant="secondary" onClick={() => onNavigate('contact')} className="sm:w-auto w-full">
+                İletişim <Phone size={18} />
+              </Button>
+            </div>
+
+            <div className="mt-12 grid md:grid-cols-3 gap-4">
+              <div className="bg-slate-800/40 border border-slate-700/50 p-5 rounded-2xl">
+                <div className="flex items-center gap-2 text-amber-400 mb-2"><PenLine size={18} /> Yazılı Başvuru</div>
+                <p className="text-sm text-slate-300">Kısa mesaj veya detaylı form ile bilgilerinizi iletin; dosyanızı yapılandıralım.</p>
+              </div>
+              <div className="bg-slate-800/40 border border-slate-700/50 p-5 rounded-2xl">
+                <div className="flex items-center gap-2 text-amber-400 mb-2"><Headphones size={18} /> Sesli Not</div>
+                <p className="text-sm text-slate-300">Anlatması zor noktaları sesli notla aktarın; değerlendirmeyi hızlandıralım.</p>
+              </div>
+              <div className="bg-slate-800/40 border border-slate-700/50 p-5 rounded-2xl">
+                <div className="flex items-center gap-2 text-amber-400 mb-2"><FileText size={18} /> Belge Ekle</div>
+                <p className="text-sm text-slate-300">Bordro, sözleşme, fesih bildirimi gibi belgeleri ekleyerek hak kaybı riskini azaltın.</p>
+              </div>
+            </div>
+
+            <div className="mt-12 bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 text-slate-300">
+              <div className="flex items-start gap-3">
+                <CircleAlert className="text-amber-500 shrink-0 mt-0.5" size={20} />
+                <p className="text-sm leading-relaxed">
+                  Buradan ilettiğiniz bilgiler ön değerlendirme içindir. Hukuki süreç, somut olayın tüm detayları ve belgelerle birlikte değerlendirilir.
+                  Acil durumlarda doğrudan telefonla iletişime geçiniz.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
 
 const HakkimizdaView = ({ onNavigate }) => {
   return (
@@ -452,11 +538,40 @@ const GeneralQuestionForm = ({ db, appId }) => {
     if (!kvkk) return alert("Lütfen KVKK metnini onaylayın.");
     setLoading(true);
     try {
-      await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'general_questions'), {
-        ...formData, audioData: audio, fileData: file, createdAt: serverTimestamp(), status: 'new'
-      });
+const folder = `uploads/${appId}/general_questions/${Date.now()}`;
+let audioUrl = null;
+let fileMeta = null;
+
+if (audio?.blob) {
+  audioUrl = await uploadToStorage({
+    blobOrFile: audio.blob,
+    path: `${folder}/audio.webm`,
+    contentType: audio.type
+  });
+}
+
+if (file?.file) {
+  const safeName = file.name.replace(/[^\w.\-() ]/g, "_");
+  const url = await uploadToStorage({
+    blobOrFile: file.file,
+    path: `${folder}/files/${safeName}`,
+    contentType: file.type
+  });
+  fileMeta = { name: file.name, type: file.type, size: file.size, url };
+}
+
+await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'general_questions'), {
+  ...formData,
+  audioUrl,
+  fileMeta,
+  createdAt: serverTimestamp(),
+  status: 'new'
+});
+
       alert("Genel sorunuz alındı! En kısa sürede dönüş yapacağız.");
       setFormData({ name: '', email: '', phone: '', question: '' });
+      setAudio(null);
+      setFile(null);
     } catch (error) { console.error(error); alert("Bir hata oluştu."); } finally { setLoading(false); }
   };
 
@@ -496,10 +611,45 @@ const WizardForm = ({ db, appId, onSwitchToGeneral }) => {
     if (!formData.name || !formData.phone || !kvkk) return alert("Zorunlu alanları ve KVKK onayını kontrol ediniz.");
     setLoading(true);
     try {
-       await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'labor_cases'), {
-        clientInfo: { name: formData.name, email: formData.email, phone: formData.phone },
-        answers: formData.answers, files: formData.files, createdAt: serverTimestamp(), status: 'new'
-      });
+const folder = `uploads/${appId}/labor_cases/${Date.now()}`;
+
+// 1) Cevap içindeki ses kayıtlarını Storage'a yükle
+const answersWithUrls = { ...(formData.answers || {}) };
+
+for (const [key, val] of Object.entries(answersWithUrls)) {
+  if (val?.audio?.blob) {
+    const audioUrl = await uploadToStorage({
+      blobOrFile: val.audio.blob,
+      path: `${folder}/answers_audio/${key}.webm`,
+      contentType: val.audio.type
+    });
+
+    answersWithUrls[key] = { ...val, audioUrl };
+    delete answersWithUrls[key].audio; // blob Firestore'a yazılmasın
+  }
+}
+
+// 2) Ek dosyaları Storage'a yükle
+const uploadedFiles = [];
+for (const f of (formData.files || [])) {
+  if (!f?.file) continue;
+  const safeName = f.name.replace(/[^\w.\-() ]/g, "_");
+  const url = await uploadToStorage({
+    blobOrFile: f.file,
+    path: `${folder}/files/${safeName}`,
+    contentType: f.type
+  });
+  uploadedFiles.push({ name: f.name, type: f.type, size: f.size, url });
+}
+
+await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'labor_cases'), {
+  clientInfo: { name: formData.name, email: formData.email, phone: formData.phone },
+  answers: answersWithUrls,
+  files: uploadedFiles,
+  createdAt: serverTimestamp(),
+  status: 'new'
+});
+
       alert("İş davası başvurunuz başarıyla alındı! Uzmanlarımız inceleyip dönecektir.");
       setStep(0);
     } catch (err) { alert("Hata oluştu."); } finally { setLoading(false); }
@@ -685,9 +835,27 @@ const AppointmentForm = ({ db, appId }) => {
     if (!formData.name) return alert("Lütfen Ad Soyad giriniz.");
     setLoading(true);
     try {
-      await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'appointments'), { ...formData, audioData: audio, status: 'new', createdAt: serverTimestamp() });
+const folder = `uploads/${appId}/appointments/${Date.now()}`;
+let audioUrl = null;
+
+if (audio?.blob) {
+  audioUrl = await uploadToStorage({
+    blobOrFile: audio.blob,
+    path: `${folder}/audio.webm`,
+    contentType: audio.type
+  });
+}
+
+await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'appointments'), {
+  ...formData,
+  audioUrl,
+  status: 'new',
+  createdAt: serverTimestamp()
+});
+
       alert("Randevu talebiniz alındı!");
       setFormData({ name: '', phone: '', email: '', date: '', notes: '' });
+      setAudio(null);
     } catch(err) { alert("Hata oluştu."); } finally { setLoading(false); }
   };
 
@@ -883,9 +1051,9 @@ const AdminPanel = ({ db, auth, appId, onNavigate }) => {
                         <div className="whitespace-pre-wrap">{item.question || item.notes || item.message || JSON.stringify(item, null, 2)}</div>
                     )}
                     {/* Ses ve Dosya Bağlantıları */}
-                    {item.audioData && <div className="mt-2"><audio src={item.audioData} controls className="h-6 w-full max-w-xs" /></div>}
-                    {item.fileData && <div className="mt-2"><a href={item.fileData.data} download={item.fileData.name} className="text-emerald-400 hover:underline flex items-center gap-1"><FileText size={14}/> {item.fileData.name}</a></div>}
-                    {item.files && item.files.map((f,i) => <div key={i} className="mt-1"><a href={f.data} download={f.name} className="text-emerald-400 hover:underline flex items-center gap-1"><FileText size={14}/> {f.name}</a></div>)}
+                    {item.audioUrl && <div className="mt-2"><audio src={item.audioUrl} controls className="h-6 w-full max-w-xs" /></div>}
+                    {item.fileMeta?.url && <div className="mt-2"><a href={item.fileMeta.url} target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline flex items-center gap-1"><FileText size={14}/> {item.fileMeta.name}</a></div>}
+                    {Array.isArray(item.files) && item.files.map((f,i) => <div key={i} className="mt-1"><a href={f.url} target="_blank" rel="noreferrer" className="text-emerald-400 hover:underline flex items-center gap-1"><FileText size={14}/> {f.name}</a></div>)}
                 </div>
 
                 <div className="flex gap-2">
