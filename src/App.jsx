@@ -1,6 +1,6 @@
+import { db, auth } from './firebase';
 import React, { useState, useEffect, useRef } from 'react';
 import { Analytics } from '@vercel/analytics/react';
-import { initializeApp } from 'firebase/app';
 import { 
   getAuth, 
   signInAnonymously, 
